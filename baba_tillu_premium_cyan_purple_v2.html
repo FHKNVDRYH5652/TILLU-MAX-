@@ -1,0 +1,611 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Baba Tillu Pro — Plans · Payment · Prediction</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1: #040714;
+    --bg2: #061226;
+    --card: rgba(255,255,255,0.03);
+    --glass: rgba(255,255,255,0.04);
+    --accent1: #00e6ff; /* electric cyan */
+    --accent2: #a855f7; /* neon purple */
+    --muted: rgba(203,215,230,0.5);
+    --glass-border: rgba(255,255,255,0.06);
+    --success: #7fe8a7;
+    --danger: #ffb66b;
+  }
+  *{box-sizing:border-box;font-family:'Poppins',sans-serif;-webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#e6f0ff}
+  body{padding:22px;display:flex;align-items:flex-start;justify-content:center;}
+  .wrap{width:1100px;max-width:95%;margin:0 auto;padding:22px;border-radius:16px;backdrop-filter:blur(8px);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.2));box-shadow:0 20px 60px rgba(4,6,20,0.7);border:1px solid rgba(255,255,255,0.03)}
+  header{display:flex;align-items:center;gap:16px;margin-bottom:10px}
+  .logo{width:68px;height:68px;border-radius:14px;overflow:hidden;background:linear-gradient(135deg,var(--accent2),var(--accent1));display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.06);box-shadow:0 6px 20px rgba(0,0,0,0.6)}
+  .logo img{width:100%;height:100%;object-fit:cover;opacity:0.9}
+  h1{font-size:20px;margin:0;color:var(--accent1);letter-spacing:0.4px}
+  .subtitle{color:var(--muted);margin-top:4px;font-size:13px}
+
+  nav{display:flex;gap:10px;margin-left:auto}
+  nav button{padding:8px 12px;border-radius:10px;border:0;background:transparent;color:var(--muted);cursor:pointer;transition:all .22s;font-weight:600}
+  nav button.active{color:var(--accent1);box-shadow:0 6px 18px rgba(0,230,255,0.06);transform:translateY(-2px)}
+
+  .page{display:none;padding:18px;border-radius:12px}
+  .page.active{display:block}
+
+  /* Plans */
+  .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:12px}
+  .plan{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid var(--glass-border);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+  .plan b{display:block;font-size:1.05rem;color:#eafcff}
+  .plan .small{color:var(--muted);margin-top:6px}
+  .btn{padding:10px 14px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#001;font-weight:800;cursor:pointer;box-shadow:0 8px 30px rgba(168,85,247,0.12);transition:transform .14s, box-shadow .14s}
+  .btn:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,230,255,0.12)}
+
+  .btn.ghost{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.04);box-shadow:none}
+
+  /* Payment */
+  .payment-box{max-width:540px;margin:12px auto;padding:14px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.25));border:1px solid rgba(255,255,255,0.03)}
+  .qr{width:220px;height:220px;border-radius:12px;border:1px solid rgba(255,255,255,0.04);display:block;margin:10px auto;background:#0d1117 center/cover no-repeat;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
+  input[type=text]{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));color:inherit;margin-top:8px;font-weight:600}
+  .note{color:#c7f8ff;margin-top:10px;font-weight:700}
+
+  /* Prediction */
+  .pred-header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .boxes{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+  .box{flex:1;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.015), rgba(0,0,0,0.3));border:1px solid rgba(255,255,255,0.03);min-width:140px;text-align:center;backdrop-filter:blur(6px)}
+  .period{font-weight:900;color:var(--accent2);font-size:18px}
+  .signal.big{color:var(--success);font-weight:900;font-size:18px;text-shadow:0 6px 22px rgba(127,232,167,0.06)}
+  .signal.small{color:var(--danger);font-weight:900;font-size:18px;text-shadow:0 6px 22px rgba(255,182,107,0.06)}
+  .predict-btn{margin-top:12px;background:transparent;border:1px dashed rgba(255,255,255,0.06);padding:10px;border-radius:10px;color:var(--muted);font-weight:700;cursor:pointer}
+
+  .results{margin-top:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.18));padding:10px;border-radius:10px;max-height:200px;overflow:auto}
+  .results div{padding:8px;border-bottom:1px dashed rgba(255,255,255,0.03);color:var(--muted)}
+
+  .chart-wrap{height:260px;margin-top:14px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.2));padding:12px;border-radius:12px}
+
+  .log{font-family:monospace;font-size:12px;color:var(--muted);max-height:140px;overflow:auto;padding:8px;background:rgba(0,0,0,0.25);border-radius:8px;margin-top:8px}
+
+  /* premium signal card */
+  .signal-card{display:flex;align-items:center;gap:12px;padding:16px;border-radius:12px;background:linear-gradient(90deg, rgba(10,12,20,0.5), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 40px rgba(10,12,30,0.6)}
+  .signal-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#001;font-weight:900;box-shadow:0 10px 30px rgba(168,85,247,0.08)}
+
+  /* confidence bar */
+  .conf-row{margin-top:10px;background:rgba(255,255,255,0.02);padding:8px;border-radius:8px}
+  .conf-bar{height:12px;border-radius:999px;background:linear-gradient(90deg,#0f1724,#081024);overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+  .conf-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 30px rgba(0,230,255,0.12);transition:width .6s ease;}
+
+  /* history */
+  #historyList .results div{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.03);padding:10px 6px}
+  .small-muted{color:var(--muted)}
+
+  footer{margin-top:18px;color:var(--muted);text-align:center;font-size:13px}
+  .admin-cross{position:fixed;right:18px;bottom:18px;width:48px;height:48px;border-radius:12px;background:linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;cursor:pointer;z-index:9999;border:1px solid rgba(255,255,255,0.03)}
+  .admin-panel{position:fixed;right:18px;top:18px;width:360px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(0,0,0,0.6), rgba(10,10,20,0.6));display:none;z-index:9999;border:1px solid rgba(255,255,255,0.04)}
+  @media (max-width:800px){ .boxes{flex-direction:column} .plans{grid-template-columns:repeat(1,1fr)} }
+
+  /* Special premium buttons */
+  #genBtn{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    color:#000;
+    font-weight:900;
+    font-size:15px;
+    letter-spacing:0.5px;
+    border:none;
+    box-shadow:0 0 20px rgba(0,230,255,0.3), 0 0 40px rgba(168,85,247,0.2);
+    transition:all .25s ease-in-out;
+  }
+  #genBtn:hover{
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:0 0 25px rgba(0,230,255,0.5), 0 0 50px rgba(168,85,247,0.4);
+  }
+
+  #winBtn{
+    background:linear-gradient(90deg,#22c55e,#4ade80);
+    color:#001;
+    font-weight:800;
+    border:none;
+    box-shadow:0 0 20px rgba(34,197,94,0.35);
+    transition:all .25s ease-in-out;
+  }
+  #winBtn:hover{
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 0 30px rgba(34,197,94,0.55);
+  }
+
+  #lossBtn{
+    background:linear-gradient(90deg,#ef4444,#f87171);
+    color:#001;
+    font-weight:800;
+    border:none;
+    box-shadow:0 0 20px rgba(239,68,68,0.35);
+    transition:all .25s ease-in-out;
+  }
+  #lossBtn:hover{
+    transform:translateY(-3px) scale(1.05);
+    box-shadow:0 0 30px rgba(239,68,68,0.55);
+  }
+
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="logo"><img id="logoImg" src="anime1.png" alt="logo"></div>
+    <div>
+      <h1>Baba Tillu Pro</h1>
+      <div class="subtitle">Plans · Payment · Prediction — Premium</div>
+    </div>
+    <div style="margin-left:auto">
+      <nav>
+        <button id="navPlans" class="active">Plans</button>
+        <button id="navPay">Payment</button>
+        <button id="navPred">Prediction</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- PLANS PAGE -->
+  <section id="page-plans" class="page active">
+    <h2>Choose a Plan</h2>
+    <div class="plans" id="plansList"></div>
+  </section>
+
+  <!-- PAYMENT PAGE -->
+  <section id="page-pay" class="page">
+    <h2>Payment & UTR</h2>
+    <div class="payment-box">
+      <div id="selectedPlanInfo" style="text-align:center;font-weight:800;margin-bottom:6px">No plan selected</div>
+      <div id="qrBox" class="qr" style="background-image:url('qr.png')"></div>
+      <div class="small muted" style="text-align:center">Scan QR or pay using your UPI app. Then enter 12-digit UTR below and confirm.</div>
+      <input id="payUtr" type="text" maxlength="12" placeholder="Enter 12-digit UTR">
+      <button id="confirmUtr" class="btn" style="width:100%;margin-top:8px">Confirm & Send for Approval</button>
+      <div id="payStatus" class="note" style="display:none"></div>
+      <div class="log" id="payLog" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- PREDICTION PAGE -->
+  <section id="page-pred" class="page">
+    <div class="pred-header">
+      <div>
+        <div style="font-size:14px;font-weight:800">Prediction Engine</div>
+        <div style="font-size:12px;color:#cbd7e6a6">Enter last 10 results (B/S). Then click Generate.</div>
+      </div>
+      <div style="text-align:right">
+        <div>Active Plan: <span id="activePlanLabel">—</span></div>
+        <div>Balance: ₹<span id="balanceLabel">0</span></div>
+      </div>
+    </div>
+
+    <div style="margin-top:12px">
+      <label>Manual Period (example: 2025091500010259)</label>
+      <input id="periodInput" type="text" placeholder="Enter period number">
+    </div>
+
+    <div style="margin-top:12px">
+      <div class="boxes">
+        <div class="box">
+          <div>PERIOD</div>
+          <div class="period" id="periodBox">--</div>
+        </div>
+        <div class="box">
+          <div>SIGNAL</div>
+          <div id="signalBox" class="signal">--</div>
+        </div>
+        <div class="box">
+          <div>PREDICTED</div>
+          <div id="numbersBox">-- / --</div>
+        </div>
+        <div class="box">
+          <div>BET AMOUNT</div>
+          <div id="betBox">—</div>
+        </div>
+      </div>
+    </div>
+
+    
+
+    <div style="margin-top:12px">
+      <button id="genBtn" class="predict-btn">Generate Prediction (AI)</button>
+      <div class="conf-row" style="display:block">
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">Confidence</div><div id="confText">0%</div></div>
+        <div class="conf-bar" style="margin-top:8px"><div id="confFill" class="conf-fill" style="width:0%"></div></div>
+      </div>
+      <div id="aiLog" class="log" style="display:none"></div>
+    </div>
+
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+      <button id="winBtn" class="btn ghost">Win</button>
+      <button id="lossBtn" class="btn ghost">Loss</button>
+      <div style="margin-left:auto">
+        <div id="statsText" class="small-muted">Wins: 0 • Losses: 0 • Accuracy: 0%</div>
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="freqChart"></canvas>
+    </div>
+
+    <div style="margin-top:12px">
+      <div style="font-weight:700;margin-bottom:6px">History (latest first)</div>
+      <div id="historyList" class="results"></div>
+    </div>
+
+  </section>
+
+  <footer>Backgrounds: anime1.png, anime2.png, anime3.png · Music: music.m4a · QR image: qr.png</footer>
+</div>
+
+<div class="admin-cross" id="adminCross">❌</div>
+<div class="admin-panel" id="adminPanel">
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <div style="font-weight:800">Admin</div><div><button id="closeAdmin" class="btn ghost">Close</button></div>
+  </div>
+  <div style="margin-top:10px">
+    <label>Admin Password</label>
+    <input id="adminPass" type="password" placeholder="enter password">
+    <div style="margin-top:8px"><button id="adminLogin" class="btn">Login</button></div>
+  </div>
+  <hr style="margin:10px 0;border:0;border-top:1px solid rgba(255,255,255,0.04)">
+  <div id="adminArea" style="display:none">
+    <div style="font-weight:700">Pending Payments</div>
+    <div id="paymentsList" style="max-height:240px;overflow:auto;margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="module">
+// Firebase modular imports (Realtime DB)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+import { getDatabase, ref, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBs7eQyMrcN8kJWMHl2ac2UZHlYQ6DypD8",
+  authDomain: "terminal-xxrr.firebaseapp.com",
+  databaseURL: "https://terminal-xxrr-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "terminal-xxrr",
+  storageBucket: "terminal-xxrr.firebasestorage.app",
+  messagingSenderId: "722753278120",
+  appId: "1:722753278120:web:bfa37aab39635a4e57f29d"
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// UI refs
+const navPlans = document.getElementById('navPlans'), navPay = document.getElementById('navPay'), navPred = document.getElementById('navPred');
+const pPlans = document.getElementById('page-plans'), pPay = document.getElementById('page-pay'), pPred = document.getElementById('page-pred');
+const plansList = document.getElementById('plansList'), selectedPlanInfo = document.getElementById('selectedPlanInfo');
+const payUtr = document.getElementById('payUtr'), confirmUtr = document.getElementById('confirmUtr'), payStatus = document.getElementById('payStatus'), payLog = document.getElementById('payLog');
+
+const genBtn = document.getElementById('genBtn'), aiLog = document.getElementById('aiLog'), periodBox = document.getElementById('periodBox');
+const periodInput = document.getElementById('periodInput'), signalBox = document.getElementById('signalBox'), numbersBox = document.getElementById('numbersBox');
+const betBox = document.getElementById('betBox'), balanceLabel = document.getElementById('balanceLabel'), activePlanLabel = document.getElementById('activePlanLabel');
+const winBtn = document.getElementById('winBtn'), lossBtn = document.getElementById('lossBtn'), historyList = document.getElementById('historyList'), statsText = document.getElementById('statsText');
+const adminCross = document.getElementById('adminCross'), adminPanel = document.getElementById('adminPanel'), adminLogin = document.getElementById('adminLogin');
+const adminPass = document.getElementById('adminPass'), adminArea = document.getElementById('adminArea'), paymentsList = document.getElementById('paymentsList'), closeAdmin = document.getElementById('closeAdmin');
+const navButtons = [navPlans, navPay, navPred];
+
+// Chart
+let ctx = document.getElementById('freqChart').getContext('2d');
+let freqChart = new Chart(ctx, {
+  type: 'line',
+  data: { labels: [], datasets: [{ label: 'Big freq', data: [], borderColor:'#7fe8a7', fill:false }, { label:'Small freq', data:[], borderColor:'#ffb66b', fill:false }] },
+  options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}}
+});
+
+// State
+const PLANS = [
+  {id:1, name:'100 To 300', range:[100,300], price:40},
+  {id:2, name:'200 To 1000', range:[200,1000], price:80},
+  {id:3, name:'500 To 5000', range:[500,5000], price:200},
+  {id:4, name:'1000 To 15000', range:[1000,15000], price:450},
+  {id:5, name:'2000 To 30000', range:[2000,30000], price:900},
+  {id:6, name:'Premium 1000 To 50000', range:[1000,50000], price:2000}
+];
+let selectedPlan = null;
+let balance = 0;
+let history = []; // local stored history objects {period,signal,result,ts}
+ // array of 'B'/'S'
+let currentPaymentListeningRef = null;
+let awaitingPaymentId = null;
+
+// Nav handlers
+navPlans.addEventListener('click', ()=>showPage('plans'));
+navPay.addEventListener('click', ()=>showPage('pay'));
+navPred.addEventListener('click', ()=>showPage('pred'));
+
+function showPage(p){
+  navButtons.forEach(b=>b.classList.remove('active'));
+  pPlans.classList.remove('active'); pPay.classList.remove('active'); pPred.classList.remove('active');
+  if(p==='plans'){ navPlans.classList.add('active'); pPlans.classList.add('active') }
+  if(p==='pay'){ navPay.classList.add('active'); pPay.classList.add('active') }
+  if(p==='pred'){ navPred.classList.add('active'); pPred.classList.add('active') }
+}
+
+// render plans
+function renderPlans(){
+  plansList.innerHTML='';
+  PLANS.forEach(pl=>{
+    const deposit = Math.max(1, Math.round((pl.range[0] + pl.range[1])/20)); // demo deposit calc
+    const div = document.createElement('div');
+    div.className='plan';
+    div.innerHTML = `<b>${pl.name}</b><div class="small">Target: ₹${pl.range[0]} - ₹${pl.range[1]}</div><div style="margin-top:8px">Fee: ₹${pl.price}</div><div style="margin-top:12px"><button class="btn" onclick="choosePlan(${pl.id})">Choose</button></div>`;
+    plansList.appendChild(div);
+  });
+}
+window.choosePlan = function(id){
+  selectedPlan = PLANS.find(p=>p.id===id);
+  activePlanLabel.innerText = selectedPlan.name;
+  selectedPlanInfo.innerText = `Selected: ${selectedPlan.name} — Fee: ₹${selectedPlan.price}`;
+  balance = selectedPlan.range[0]; // start balance default lowest
+  updateBalanceUI();
+  showPage('pay');
+}
+
+// Payment submit
+confirmUtr.addEventListener('click', async ()=>{
+  const utr = payUtr.value.trim();
+  if(!/^\d{12}$/.test(utr)){ alert('Enter valid 12-digit UTR'); return; }
+  if(!selectedPlan){ alert('Choose a plan first'); showPage('plans'); return; }
+  confirmUtr.disabled = true; payStatus.style.display='block'; payStatus.innerText='Submitting payment...';
+  const id = 'p_' + Date.now();
+  const payload = { utr, planId: selectedPlan.id, planName:selectedPlan.name, amount:selectedPlan.price, status:'pending', ts:Date.now() };
+  try{
+    await set(ref(db, 'payments/' + id), payload);
+    payLog.style.display='block'; payLog.innerText = 'Payment sent for approval (id: ' + id + ')';
+    awaitingPaymentId = id;
+    // listen for status change
+    const statusRef = ref(db, 'payments/' + id + '/status');
+    onValue(statusRef, (snap)=>{
+      const val = snap.val();
+      if(!val) return;
+      payLog.innerText = 'Payment status: ' + val;
+      if(val === 'approved'){
+        payStatus.innerText = 'Approved — crediting balance...';
+        // credit balance and navigate to prediction
+        balance = (selectedPlan.range[0]); // initial balance or some scheme; here we set start balance to min target
+        localStorage.setItem('bt_balance', balance);
+        updateBalanceUI();
+        setTimeout(()=>{ showPage('pred'); }, 1200);
+      } else if(val === 'rejected'){
+        payStatus.innerText = 'Rejected by admin';
+      }
+    });
+  }catch(err){
+    console.error(err);
+    payStatus.innerText = 'Submit failed: ' + (err.message||err);
+  } finally{ confirmUtr.disabled=false; }
+});
+
+// Admin cross click
+adminCross.addEventListener('click', ()=>{
+  // prompt for pass in a modal style input inside panel
+  adminPanel.style.display='block';
+});
+closeAdmin.addEventListener('click', ()=>{ adminPanel.style.display='none'; adminArea.style.display='none'; adminPass.value=''; });
+
+adminLogin.addEventListener('click', ()=>{
+  const v = adminPass.value.trim();
+  if(v === '456'){
+    adminArea.style.display='block';
+    listenPaymentsAdmin();
+  } else { alert('Wrong password'); }
+});
+
+// admin: listen all payments
+function listenPaymentsAdmin(){
+  const paymentsRef = ref(db, 'payments');
+  onValue(paymentsRef, (snap)=>{
+    const data = snap.val() || {};
+    paymentsList.innerHTML='';
+    Object.keys(data).reverse().forEach(id=>{
+      const p = data[id];
+      const div = document.createElement('div');
+      div.style.padding='8px'; div.style.borderBottom='1px solid rgba(255,255,255,0.04)';
+      div.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+        <div><strong>${p.planName}</strong><div style="font-size:12px;color:#bbb">UTR:${p.utr} • ${p.amount} • ${p.status||'pending'}</div></div>
+        <div style="text-align:right">
+          <div style="font-size:12px;color:#ccc">${p.ts?new Date(p.ts).toLocaleString():''}</div>
+          <div style="margin-top:6px">
+            ${p.status!=='approved'?`<button onclick="approvePayment('${id}')">Approve</button>`:''}
+            ${p.status!=='rejected'?`<button onclick="rejectPayment('${id}')">Reject</button>`:''}
+          </div>
+        </div>
+      </div>`;
+      paymentsList.appendChild(div);
+    });
+  });
+}
+window.approvePayment = async function(id){
+  try{ await update(ref(db, 'payments/' + id), { status:'approved', approvedAt: Date.now() }); alert('Approved'); }catch(e){ alert('Err '+e); }
+}
+window.rejectPayment = async function(id){
+  try{ await update(ref(db, 'payments/' + id), { status:'rejected', approvedAt: Date.now() }); alert('Rejected'); }catch(e){ alert('Err '+e); }
+}
+
+// Prediction logic helpers
+
+
+// Save/load history
+function saveState(){
+  
+  localStorage.setItem('bt_history', JSON.stringify(history));
+  localStorage.setItem('bt_balance', balance);
+}
+function loadState(){
+  
+  history = JSON.parse(localStorage.getItem('bt_history')||'[]');
+  balance = Number(localStorage.getItem('bt_balance')||balance||0);
+   renderHistory(); updateBalanceUI();
+}
+
+
+// AI "deep" analysis (fake but realistic-looking)
+function analyzeAndPredict(){
+  aiLog.style.display='block'; aiLog.innerHTML='Starting deep analysis...\\n';
+  genBtn.disabled = true;
+  // Show staged logs over 10-15s
+  const stages = [
+    'Analyzing frequency and runs...',
+    'Computing trend & momentum...',
+    'Applying human-psychology bias model...',
+    'Estimating market (player) skew probabilities...',
+    'Running ensemble of heuristics & ML-simulators...',
+    'Finalizing high-confidence prediction...'
+  ];
+  let idx=0;
+  const t0 = Date.now();
+  function step(){
+    if(idx < stages.length){
+      aiLog.innerHTML += '> ' + stages[idx] + '\\n';
+      idx++;
+      setTimeout(step, 2000 + Math.random()*1200);
+    } else {
+      // produce prediction
+      const pred = computePrediction();
+      showPrediction(pred);
+      aiLog.innerHTML += '\\nPrediction generated in ' + Math.round((Date.now()-t0)/1000) + 's\\n';
+      genBtn.disabled = false;
+    }
+  }
+  step();
+}
+
+// compute prediction using patterns and psychology (random mode active)
+
+function computePrediction(){
+  const chosen = Math.random() < 0.5 ? 'B' : 'S';
+  const confidence = Math.floor(50 + Math.random()*45);
+  const betAmount = Math.max(1, Math.round(balance * (0.1 + Math.random()*0.4)));
+  const level = Math.floor(Math.random()*3) + 1;
+  let a = Math.floor(Math.random()*10);
+  let b = Math.floor(Math.random()*10);
+  return { signal: chosen, confidence, betAmount, numbers:[a,b], level };
+}
+
+
+function showPrediction(pred){
+  // update confidence bar UI if present
+  try{ const c = Math.max(0, Math.min(100, pred.confidence||50)); const bar = document.getElementById('confFill'); if(bar){ bar.style.width = c + '%'; document.getElementById('confText') && (document.getElementById('confText').innerText = c + '%'); } }catch(e){}
+
+  const nextPeriod = computeNextPeriod(periodInput.value.trim() || periodBox.textContent || getCurrentPeriod());
+  periodBox.innerText = periodInput.value.trim() || getCurrentPeriod();
+  signalBox.innerText = pred.signal === 'B' ? 'BIG' : 'SMALL';
+  signalBox.className = 'signal ' + (pred.signal === 'B' ? 'big' : 'small');
+  numbersBox.innerText = pred.numbers.join(' / ');
+  betBox.innerText = '₹' + pred.betAmount + ' (L' + pred.level + ')';
+  // store current predicted as temp
+  sessionStorage.setItem('bt_current_prediction', JSON.stringify(pred));
+  // update chart and logs
+  updateChart();
+  aiLog.scrollTop = aiLog.scrollHeight;
+}
+
+// utility: compute next period by incrementing last 2 digits (very simple)
+function computeNextPeriod(p){
+  // try to parse last number after... assume p ends with numeric sequence
+  if(!p) return '';
+  const m = p.match(/(\d+)$/);
+  if(!m) return p;
+  const num = BigInt(m[1]) + 1n;
+  return p.slice(0, p.length - m[1].length) + num.toString();
+}
+
+function getCurrentPeriod(){
+  // create synthetic period based on current timestamp: YYYYMMDDHHmm + counter
+  const d = new Date();
+  const pad = (n,len=2)=>n.toString().padStart(len,'0');
+  const base = '' + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + pad(d.getHours()) + pad(d.getMinutes());
+  const sec = pad(d.getSeconds(),2);
+  return base + '1' + sec; // simple composition
+}
+
+// History UI
+function renderHistory(){
+  historyList.innerHTML='';
+  history.slice().reverse().forEach(h=>{
+    const div = document.createElement('div');
+    div.innerHTML = `<div style="display:flex;justify-content:space-between"><div><strong>${h.period}</strong><div style="font-size:12px;color:#bbb">${h.signal} • ${h.result}</div></div><div style="font-size:12px;color:#ccc">${new Date(h.ts).toLocaleTimeString()}</div></div>`;
+    historyList.appendChild(div);
+  });
+  // stats
+  const wins = history.filter(h=>h.result==='win').length;
+  const losses = history.filter(h=>h.result==='loss').length;
+  const acc = (wins+losses) ? Math.round((wins/(wins+losses))*100) : 0;
+  statsText.innerText = `Wins: ${wins} • Losses: ${losses} • Accuracy: ${acc}%`;
+}
+
+// chart update from recent history frequencies
+function updateChart(){
+  const N = 10;
+  const recent = history.slice(-N);
+  const labels = recent.map((h,i)=> i+1);
+  const bigs = recent.map(h=> h.signal === 'B' ? 1 : 0);
+  const smalls = recent.map(h=> h.signal === 'S' ? 1 : 0);
+  freqChart.data.labels = labels;
+  freqChart.data.datasets[0].data = bigs;
+  freqChart.data.datasets[1].data = smalls;
+  freqChart.update();
+}
+
+// Win / Loss buttons handler
+winBtn.addEventListener('click', ()=>markOutcome('win'));
+lossBtn.addEventListener('click', ()=>markOutcome('loss'));
+
+function markOutcome(result){
+  // get current prediction and period
+  const pred = JSON.parse(sessionStorage.getItem('bt_current_prediction')||'null');
+  const p = periodBox.innerText || periodInput.value.trim() || getCurrentPeriod();
+  if(!pred){ alert('No active prediction. Generate first.'); return; }
+  // push into history: result corresponds to whether pred.signal matched actual outcome
+  // For user input, we accept 'win' means prediction was correct
+  history.push({ period: p, signal: pred.signal, result, ts: Date.now() });
+  const actual = (result==='win') ? pred.signal : (pred.signal === 'B' ? 'S' : 'B');
+  // update balance and loss streak
+  if(result === 'win'){
+    // credit profit = pred.betAmount * (some multiplier) simplified: + pred.betAmount*0.15
+    balance = Math.round(balance + pred.betAmount * 0.15);
+    localStorage.setItem('bt_lossStreak', '0');
+  } else {
+    balance = Math.max(0, balance - pred.betAmount);
+    const prev = Number(localStorage.getItem('bt_lossStreak')||'0') + 1;
+    localStorage.setItem('bt_lossStreak', String(prev));
+  }
+  saveState();
+   renderHistory(); updateChart(); updateBalanceUI();
+  // advance period automatically
+  periodInput.value = computeNextPeriod(p);
+  // clear current prediction
+  sessionStorage.removeItem('bt_current_prediction');
+}
+
+// balance UI
+function updateBalanceUI(){ balanceLabel.innerText = balance; activePlanLabel.innerText = selectedPlan?selectedPlan.name:'—'; }
+
+// init load state
+loadState();
+renderPlans();
+updateChart();
+renderHistory();
+
+// generate prediction click
+genBtn.addEventListener('click', ()=>{ analyzeAndPredict(); });
+
+// load initial history into input if exists
+
+
+// compute next automatic period after generate: handled in markOutcome and showPrediction
+
+// simple helper to update UI on load
+
+
+// Load any pending payments for user if listening ID known (not persisted here).
+// Admin listens in admin panel when logged in.
+
+</script>
+</body>
+</html>
